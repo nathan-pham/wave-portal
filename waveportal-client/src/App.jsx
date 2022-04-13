@@ -8,22 +8,7 @@ import Button from "@/components/atoms/Button";
 import A from "@/components/atoms/A";
 
 import Loading from "@/components/Loading";
-
-const Wave = ({ address, timestamp, message }) => (
-    <div className="border p-4 rounded-md">
-        <h2>
-            <A
-                href={`https://rinkeby.etherscan.io/address/${address}`}
-                target="_blank"
-                rel="noreferrer"
-            >
-                {address}
-            </A>
-        </h2>
-        <p className="mt-2">{timestamp.toString()}</p>
-        <p>{message}</p>
-    </div>
-);
+import Wave from "@/components/Wave";
 
 const App = () => {
     const { wallet, connectWallet } = useWallet();
