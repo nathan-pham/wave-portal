@@ -1,26 +1,27 @@
+import { useState } from "react";
+
 import useWallet from "@/hooks/useWallet";
+import useContract from "@/hooks/useContract";
+
+import Textarea from "@/components/atoms/Textarea";
 import Button from "@/components/atoms/Button";
-
-import { ethers } from "ethers";
-
-import contractAbi from "@/utils/WavePortal.json";
-const contractAddress = "0x9f24940ab38ca5E269Ce909635cC1D2CC5fB9117";
+import Loading from "@/components/Loading";
 
 const App = () => {
     const { wallet, connectWallet } = useWallet();
+    const { contract, waves, updateWaves } = useContract(wallet);
 
-    const wave = async () => {
-        if (wallet) {
-            const provider = new ethers.providers.Web3Provider(ethereum);
-            const signer = provider.getSigner();
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
 
-            const wavePortalContract = new ethers.Contract(
-                contractAddress,
-                contractAbi.abi,
-                signer
-            );
+    const onClickWave = async () => {
+        if (contract && !loading && message.length > 0) {
+            setLoading(true);
 
-            console.log((await wavePortalContract.getTotalWaves()).toNumber());
+            await contract.wave(message).then((txn) => txn.wait());
+            await updateWaves();
+
+            setLoading(false);
         }
     };
 
@@ -42,13 +43,24 @@ const App = () => {
                     to say hi.
                 </p>
 
-                {wallet ? (
-                    <Button onClick={wave}>Wave</Button>
-                ) : (
-                    <Button onClick={connectWallet}>
-                        Connect with MetaMask
-                    </Button>
-                )}
+                <div className="mt-8">
+                    {wallet ? (
+                        <>
+                            <Textarea
+                                required
+                                placeholder="What's up?"
+                                onChange={(e) => setMessage(e.target.value)}
+                            ></Textarea>
+                            <Button className="mt-2" onClick={onClickWave}>
+                                {loading ? <Loading /> : "Wave"}
+                            </Button>
+                        </>
+                    ) : (
+                        <Button onClick={connectWallet}>
+                            Connect with MetaMask
+                        </Button>
+                    )}
+                </div>
             </header>
         </div>
     );
