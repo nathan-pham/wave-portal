@@ -5,7 +5,25 @@ import useContract from "@/hooks/useContract";
 
 import Textarea from "@/components/atoms/Textarea";
 import Button from "@/components/atoms/Button";
+import A from "@/components/atoms/A";
+
 import Loading from "@/components/Loading";
+
+const Wave = ({ address, timestamp, message }) => (
+    <div className="border p-4 rounded-md">
+        <h2>
+            <A
+                href={`https://rinkeby.etherscan.io/address/${address}`}
+                target="_blank"
+                rel="noreferrer"
+            >
+                {address}
+            </A>
+        </h2>
+        <p className="mt-2">{timestamp.toString()}</p>
+        <p>{message}</p>
+    </div>
+);
 
 const App = () => {
     const { wallet, connectWallet } = useWallet();
@@ -31,14 +49,13 @@ const App = () => {
                 <h1 className="text-4xl font-bold">👋 Hello there.</h1>
                 <p className="text-slate-500 mt-4">
                     I code cool things (
-                    <a
-                        className="text-blue-600 hover:underline"
+                    <A
                         href="https://github.com/nathan-pham/battlerena"
                         target="__blank"
                         rel="noreferrer"
                     >
                         like the game Battle Rena
-                    </a>
+                    </A>
                     ) and eat goldfish. Consider connecting your Ethereum wallet
                     to say hi.
                 </p>
@@ -62,6 +79,12 @@ const App = () => {
                     )}
                 </div>
             </header>
+
+            <main className="mt-8">
+                {waves.map((wave, key) => (
+                    <Wave key={key} {...wave} />
+                ))}
+            </main>
         </div>
     );
 };

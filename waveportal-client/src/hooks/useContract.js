@@ -20,9 +20,12 @@ const useContract = (wallet) => {
             );
 
             setContract(wavePortalContract);
-            updateWaves();
         }
     }, [wallet]);
+
+    useEffect(() => {
+        updateWaves();
+    }, [contract]);
 
     const updateWaves = async () => {
         if (contract) {
